@@ -8,7 +8,7 @@ raindrop_spawn_time = 0
 mike_image = pygame.image.load("images/Mike.png").convert()
 mike_umbrella_image = pygame.image.load("images/Mike_umbrella.png").convert()
 cloud_image = pygame.image.load("images/cloud.png").convert()
-lase_hit_time = 0
+last_hit_time = 0
 
 class Raindrop:
     def __init__(self, x, y):
@@ -24,20 +24,6 @@ class Raindrop:
 
     def draw(self):
         pygame.draw.line(screen,(0,0,0),(self.x,self.y),(self.x,self.y+5),1)
-
-class Mike:
-    def __init__(self):
-        self.x = 300
-        self.y = 400
-
-    def draw(self):
-        if time.time() > lase_hit_time+1:
-            screen.blit(mike_image,(self.x, self.y))
-        else:
-            screen.blit(mike_umbrella_image,(self.x, self.y))
-    
-    def hit_by(self,raindrop):
-        return pygame.Rect(self.x, self.y,170,192).collidepoint((raindrop.x,raindrop.y))
 
 class Cloud:
     def __init__(self):
@@ -56,7 +42,20 @@ class Cloud:
             self.x +=1
         if pressed_key[K_LEFT]:
             self.x -=1
+class Mike:
+    def __init__(self):
+        self.x = 300
+        self.y = 400
 
+    def draw(self):
+        if time.time() > last_hit_time+1:               #Mike가 1초동안 비를 맞지 않아야 우산이 없어짐
+            screen.blit(mike_image,(self.x, self.y))
+        else:
+            screen.blit(mike_umbrella_image,(self.x, self.y))
+    
+    def hit_by(self,raindrop):
+        return pygame.Rect(self.x, self.y,170,192).collidepoint((raindrop.x,raindrop.y))
+    
 raindrops = []
 mike = Mike()
 cloud = Cloud()
@@ -69,35 +68,25 @@ while 1:
 
     pressed_key = pygame.key.get_pressed()
 
-    #raindrops.append(Raindrop())
     screen.fill((255,255,255))
     mike.draw()
     cloud.draw()
-    cloud.rain()
+    cloud.rain() #매 frame마다 raindrops list에 Raindrop class 10개 append
     cloud.move()
 
-    """for raindrop in raindrops:
-        raindrop.move()
-        raindrop.draw()
-    """
-
     i = 0
-    while i < len(raindrops):
-        raindrops[i].move()
-        raindrops[i].draw()
+    while i < len(raindrops): #매 frame마다 10개씩 증가 된 raindrops list 만큼 순환
+        raindrops[i].move()   #빗줄기 시작점을 random 만큼 아래로 이동
+        raindrops[i].draw()   #빗줄기 그리기
         flag = False
-        if raindrops[i].off_screen():
-            del raindrops[i]
-            i -= 1
+        if raindrops[i].off_screen():   #빗줄기가 스크린 밖으로 나갔는지 체크
             flag = True
-        if mike.hit_by(raindrops[i]):
-            del raindrops[i]
+        if mike.hit_by(raindrops[i]):   #빗줄기가 Mike와 닫았는지 체크
             flag = True
-            lase_hit_time = time.time()
-            i -= 1
-        if flag:
-            del raindrops[i]
-            i -= 1
-        i += 1
+            last_hit_time = time.time() #last_hit_time을 Mike.draw에 돌려줘서 mike_umbrella_image 불러옴
+        if flag:                        #flag가 true인지 체크
+            del raindrops[i]            #나갔으면 해당 list삭제
+            i -= 1                      #삭제 되어 당겨진 list를 다음에 실행하기 위해 i값 -1
+        i += 1                          #빗줄기가 살아있어야 하면 다음 list로 넘어감
 
-    pygame.display.update()
+    pygame.display.update()             #한 frame 끝내고 다음 frame으로 이동
