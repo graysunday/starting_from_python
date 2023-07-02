@@ -24,7 +24,6 @@ class Raindrop:
 
     def draw(self):
         pygame.draw.line(screen,(0,0,0),(self.x,self.y),(self.x,self.y+5),1)
-
 class Cloud:
     def __init__(self):
         self.x = 300
