@@ -5,6 +5,8 @@ clock = pygame.time.Clock()
 pygame.display.set_caption("Space Invaders")
 screen = pygame.display.set_mode((640,650))
 last_badguy_spawn_time = 0
+score = 0
+font = pygame.font.Font(None,20)
 
 badguy_image = pygame.image.load("images/badguy.png").convert()
 badguy_image.set_colorkey((0,0,0))
@@ -12,6 +14,7 @@ fighter_image = pygame.image.load("images/fighter.png").convert()
 fighter_image.set_colorkey((255,255,255))
 missile_image = pygame.image.load("images/missile.png").convert()
 missile_image.set_colorkey((255,255,255))
+GAME_OVER = pygame.image.load("images/gameover.png").convert()
 
 #=============================================================================================================
 
@@ -36,8 +39,11 @@ class Badguy:
         screen.blit(badguy_image,(self.x, self.y))
     def off_screen(self):               #badguy 아래로 떨어지면 지울수 있도록 true 반환
         return self.y > 640
-    def touching(self, missile):
+    def touching(self, missile):        #badguy와 missile이 touch여부 반환
         return (self.x+35-missile.x)**2+(self.y+22-missile.y)**2 < 1225
+    def score(self):                    #badguy와 missile이 touch되면 score값 증가
+        global score
+        score += 100
     
 class Fighter:
     def __init__(self):
@@ -51,6 +57,12 @@ class Fighter:
         screen.blit(fighter_image,(self.x, 591))
     def fire(self):
         missiles.append(Missile(self.x+50))
+    def hit_by(self,badguy):            #badguy와 fighter의 접촉여부 반환
+        return (
+            badguy.y > 585 and
+            badguy.x > self.x - 55 and
+            badguy.x < self.x + 85
+        )
 
 class Missile:
     def __init__(self, x):
@@ -109,11 +121,22 @@ while 1:
         j = 0
         while j < len(missiles):
             if badguys[i].touching(missiles[j]):
+                badguy[i].score()        #badguy가 touch될때마다 score가 +10
                 del badguys[i]
                 del missiles[j]
                 i -= 1
                 break
             j += 1
         i += 1
-    
+
+    screen.blit(font.render("Score: " + str(score), True,(255,255,255)),(5,5))    #font.render함수(출력값, antialiasing,text color, 위치
+
+    for badguy in gacguys:
+        if gighter.hiy_by(badguy):
+            while 1:
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        sys.exit()
+                pygame.display.update()
+                
     pygame.display.update()
