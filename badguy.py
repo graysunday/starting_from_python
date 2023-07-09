@@ -59,15 +59,15 @@ class Fighter:
         self.dir = 0
     
     def turn(self):
-        if pressed_key[K_a] and self.dir<90:
+        if pressed_keys[K_a] and self.dir<90:
             self.dir += 1
-        if pressed_key[K_z] and self.dir> -90:
+        if pressed_keys[K_z] and self.dir> -90:
             self.dir -= 1
     
     def move(self):
-        if pressed_key[K_LEFT] and self.x > 0:
+        if pressed_keys[K_LEFT] and self.x > 0:
             self.x -= 3
-        if pressed_key[K_RIGHT] and self.x < 540:
+        if pressed_keys[K_RIGHT] and self.x < 540:
             self.x += 3
     
     def draw(self):
@@ -116,7 +116,7 @@ while 1:
             sys.exit()
         if event.type == KEYDOWN and event.key == K_SPACE:
             fighter.fire()
-    pressed_key = pygame.key.get_pressed()
+    pressed_keys = pygame.key.get_pressed()
 
     if time.time() - last_badguy_spawn_time > 0.5:
         badguys.append(Badguy())
@@ -143,6 +143,7 @@ while 1:
         missiles[i].draw()
         if missiles[i].off_screen():
             del missiles[i]
+            misses += 1
             i -= 1
         i += 1
     
