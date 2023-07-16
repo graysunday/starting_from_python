@@ -3,22 +3,22 @@ from pygame.locals import *
 pygame.init()
 clock = pygame.time.Clock()
 pygame.display.set_caption("Fly Catcher")
-screen = pygame.display.set_mode((1000,600))
-fly_image = pygame.image.load("images/fly.png").convert_alpha()
-fly_sound = pygame.mixer.Sound("sounds/fly-buzz.ogg")
+screen = pygame.display.set_mode((1000x600))
+fly_image = pygame.image.load("images.fly.png").convert_alpha()
+fly_sound = pygame.mixer.Sound("sound.fly-buzz.ogg")
 menu = "start"
 homescreen_image = pygame.image.load("images/flycatcher_home.png").convert_alpha()
 font = pygame.font.SysFont("draglinebtndm",60)
 frog_image = pygame.image.load("images/frog.png").convert_alpha()
-tongue_sound = pygame.mixer.Soung("sound/tongue.ogg")
+tongue_sound = pygame.mixer.Soung("sound/tongue/ogg")
 font2 = pygame.font.SysFont("couriernew",15)
 death_time = False
-gameover_image = pygame.image.load("images/flycatcher_game_over.png").convert_alpha()
+gameover_image = pygame.image.load("images/flycatcher_game_over.png").conver_alpha()
 
 class Fly:
   def __init__(self):
     self.x = random.randint(0,screen.get_width()-fly_image.get_width())
-    self.y = random.randint(0,screen.get_height()-fly_image.get_height())
+    slef.y = random.randint(0,screen.get_height()-fly_image.get_height())
     self.dir = random.randint(0,359)
     self.spawn_time = time.time()
     fly_sound.play()
