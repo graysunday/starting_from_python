@@ -3,22 +3,22 @@ from pygame.locals import *
 pygame.init()
 clock = pygame.time.Clock()
 pygame.display.set_caption("Fly Catcher")
-screen = pygame.display.set_mode((1000x600))
-fly_image = pygame.image.load("images.fly.png").convert_alpha()
-fly_sound = pygame.mixer.Sound("sound.fly-buzz.ogg")
+screen = pygame.display.set_mode((1000,600))
+fly_image = pygame.image.load("images/fly.png").convert_alpha()
+fly_sound = pygame.mixer.Sound("sounds/fly-buzz.ogg")
 menu = "start"
 homescreen_image = pygame.image.load("images/flycatcher_home.png").convert_alpha()
 font = pygame.font.SysFont("draglinebtndm",60)
 frog_image = pygame.image.load("images/frog.png").convert_alpha()
-tongue_sound = pygame.mixer.Soung("sound/tongue/ogg")
+tongue_sound = pygame.mixer.Sound("sounds/tongue.ogg")
 font2 = pygame.font.SysFont("couriernew",15)
 death_time = False
-gameover_image = pygame.image.load("images/flycatcher_game_over.png").conver_alpha()
+gameover_image = pygame.image.load("images/flycatcher_game_over.png").convert_alpha()
 
 class Fly:
   def __init__(self):
     self.x = random.randint(0,screen.get_width()-fly_image.get_width())
-    slef.y = random.randint(0,screen.get_height()-fly_image.get_height())
+    self.y = random.randint(0,screen.get_height()-fly_image.get_height())
     self.dir = random.randint(0,359)
     self.spawn_time = time.time()
     fly_sound.play()
@@ -28,15 +28,15 @@ class Fly:
     if self.stuck:
       tpos = frog.get_tongue_pos()
       screen.blit(fly_image,(tpos[0]-fly_image.get_width()/2,tpos[1]-fly_image.get_height()/2))
-    elif time.time() > slef.spawn_time+1.4 and time.time() < self.spawn_time+3.4:
+    elif time.time() > self.spawn_time+1.4 and time.time() < self.spawn_time+3.4:
       rotated = pygame.transform.rotate(fly_image,self.dir)
       screen.blit(rotated,(self.x, self.y))
 
   def stick(self):
     if not self.stuck and time.time() > self.spawn_time + 1.4 and time.time() < self.spawn_time + 3.4:
-      tpos = frog,get_tongue_pos()
+      tpos = frog.get_tongue_pos()
       fpos = (self.x+fly_image.get_width()/2,self.y+fly_image.get_height()/2)
-      if (tpos[0]-fpos[0]**2+(tpos[1]-fpos[1])**2 < (fly_image.get_width()/2+10)**2:
+      if (tpos[0]-fpos[0])**2+(tpos[1]-fpos[1])**2 < (fly_image.get_width()/2+10)**2:
         self.stuck = True
 
 class Frog:
@@ -51,31 +51,31 @@ class Frog:
       self.tongue_extend = -1
     if self.tongue_dist == 0:
       self.tongue_extend = 0
-    if pressed_keys[L+LEFT]:
+    if pressed_keys[K_LEFT]:
       self.dir += 4
-    if pressed_kets[K_RIGHT]:
+    if pressed_keys[K_RIGHT]:
       self.dir -=4
   def draw(self):
     if death_time:
-      rotated = pygame.transform.rotozoom(frog_image,self.dir,1-((time.time()-death_time).2))
+      rotated = pygame.transform.rotozoom(frog_image,self.dir,1-((time.time()-death_time)/2))
       screen.blit(rotated,(screen.get_width()/2-rotated.get_width()/2,screen.get_height()/2-rotated.get_height()/2))
     else:
       tpos = self.get_tongue_pos()
       pygame.draw.circle(screen,(255,50,50),tpos,10)
-      pygame.draw.line(screen,(255,50,50),(screen.get_width()/2.screen.get_height()/2),tpos,10)
-      rotated = pygame.transform.rotate(frong_image,self.dir)
+      pygame.draw.line(screen,(255,50,50),(screen.get_width()/2,screen.get_height()/2),tpos,10)
+      rotated = pygame.transform.rotate(frog_image,self.dir)
       screen.blit(rotated,(screen.get_width()/2-rotated.get_width()/2,screen.get_height()/2-rotated.get_height()/2))
   def get_tongue_pos(self):
     return (
             int(screen.get_width()/2-self.tongue_dist*math.sin(math.radians(self.dir))),
-            int(screen.get_height()/2-self.tongue_dist*math.cos(mathk.radians(self.dir)))
+            int(screen.get_height()/2-self.tongue_dist*math.cos(math.radians(self.dir)))
     )
   def tongue_poke(self):
     if self.tongue_dist == 0:
       self.tongue_extend = 5
       tongue_sound.play()
 
-fly = NONE
+fly = None
 frog = Frog()
 
 while 1:
@@ -88,7 +88,7 @@ while 1:
   pressed_keys = pygame.key.get_pressed()
 
   if menu == "start":
-    screen.blit(honescreen_image,(0,0))
+    screen.blit(homescreen_image,(0,0))
     txt = font.render("Play", True,(255,255,255))
     txt_x = 705
     txt_y = 435
@@ -129,7 +129,7 @@ while 1:
       txt_x = 705
       txt_y = 235
       buttonrect = pygame.Rect((txt_x,txt_y),txt.get_size())
-      pygame.drqw.rect(screen,(200,50,0),buttonrect)
+      pygame.draw.rect(screen,(200,50,0),buttonrect)
       screen.blit(txt,(txt_x,txt_y))
       if pygame.mouse.get_pressed()[0] and buttonrect.collidepoint(pygame.mouse.get_pos()):
         menu = "game"
@@ -138,4 +138,4 @@ while 1:
         death_time = False
         fly = None
         frog = Frog()
-pygame.display.update()
+  pygame.display.update()
