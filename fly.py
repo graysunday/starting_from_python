@@ -5,12 +5,12 @@ clock = pygame.time.Clock()
 pygame.display.set_caption("Fly Catcher")
 screen = pygame.display.set_mode((1000,600))
 fly_image = pygame.image.load("images/fly.png").convert_alpha()
-fly_sound = pygame.mixer.Sound("sound/fly-buzz.ogg")
+fly_sound = pygame.mixer.Sound("sounds/fly-buzz.ogg")
 menu = "start"
 homescreen_image = pygame.image.load("images/flycatcher_home.png").convert_alpha()
 font = pygame.font.SysFont("draglinebtndm",60)
 frog_image = pygame.image.load("images/frog.png").convert_alpha()
-tongue_sound = pygame.mixer.Sound("sound/tongue.ogg")
+tongue_sound = pygame.mixer.Sound("sounds/tongue.ogg")
 font2 = pygame.font.SysFont("couriernew",15)
 death_time = False
 gameover_image = pygame.image.load("images/flycatcher_game_over.png").convert_alpha()
@@ -36,7 +36,7 @@ class Fly:
     if not self.stuck and time.time() > self.spawn_time + 1.4 and time.time() < self.spawn_time + 3.4:
       tpos = frog.get_tongue_pos()
       fpos = (self.x+fly_image.get_width()/2,self.y+fly_image.get_height()/2)
-      if (tpos[0]-fpos[0])**2+(tpos[1]-fpos[1])**2 < (fly_image.get_width()/2+10)**2:
+      if (tpos[0]-fpos[0]**2+(tpos[1]-fpos[1]))**2 < (fly_image.get_width()/2+10)**2:
         self.stuck = True
 
 class Frog:
@@ -129,7 +129,7 @@ while 1:
       txt_x = 705
       txt_y = 235
       buttonrect = pygame.Rect((txt_x,txt_y),txt.get_size())
-      pygame.draw.rect(screen,(200,50,0),buttonrect)
+      pygame.drqw.rect(screen,(200,50,0),buttonrect)
       screen.blit(txt,(txt_x,txt_y))
       if pygame.mouse.get_pressed()[0] and buttonrect.collidepoint(pygame.mouse.get_pos()):
         menu = "game"
@@ -138,4 +138,4 @@ while 1:
         death_time = False
         fly = None
         frog = Frog()
-  pygame.display.update()
+pygame.display.update()
