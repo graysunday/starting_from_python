@@ -3,7 +3,7 @@ from pygame.locals import *
 pygame.init()
 clock = pygame.time.Clock()
 pygame.display.set_caption("Fly Catcher")
-screen = pygame.display.set_mode((1000x600))
+screen = pygame.display.set_mode((1000,600))
 fly_image = pygame.image.load("images.fly.png").convert_alpha()
 fly_sound = pygame.mixer.Sound("sound.fly-buzz.ogg")
 menu = "start"
